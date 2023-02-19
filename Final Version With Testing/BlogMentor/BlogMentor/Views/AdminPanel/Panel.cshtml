@@ -1,0 +1,277 @@
+﻿@model BlogMentor.Models.UserViewModel
+@{
+    ViewBag.Title = "Panel";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    .zui-table {
+        border: solid 1px #DDEEEE;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font: normal 13px Arial, sans-serif;
+    }
+
+        .zui-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .zui-table tbody td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+    .AA {
+        background-color: #ff9907;
+        border-color: #ff9907;
+        color: #000022;
+    }
+</style>
+
+<section class="blog-post-area section-margin">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-2" onclick="changeDiv('user')"><a class="button AA" style="color:white;" id="UA"> New Users</a></div>
+                    <div class="col-lg-2" onclick="changeDiv('blog')"><a class="button" style="color:white;" id="BA"> New Blogs</a></div>
+                    <div class="col-lg-2" onclick="changeDiv('role')"><a class="button" style="color:white;" id="RA"> User Role</a></div>
+                    <div class="col-lg-3" onclick="location.href='/Blog/CreateBlog?BlogID=0'"><a class="button" style="color:white;" id="BA"><i class="ti-file"></i> Create Blog</a></div>
+                    <div class="col-lg-2" onclick="location.href = '/Login/Logout'"><a class="button" style="color:white;" id="RA"><i class="ti-user"></i> Logout</a></div>
+                </div>
+
+                <script>
+                    function changeDiv(x) {
+                        if (x == "user") {
+                            $("#UA").addClass("AA");
+                            $("#BA").removeClass("AA");
+                            $("#RA").removeClass("AA");
+                            $("#usersDiv").attr("hidden", false);
+                            $("#newBlogsDiv").attr("hidden", true);
+                            $("#roleDiv").attr("hidden", true);
+                        }
+                        else if (x == "blog") {
+                            $("#BA").addClass("AA");
+                            $("#UA").removeClass("AA");
+                            $("#RA").removeClass("AA");
+                            $("#usersDiv").attr("hidden", true);
+                            $("#newBlogsDiv").attr("hidden", false);
+                            $("#roleDiv").attr("hidden", true);
+                        }
+                        else {
+                            $("#RA").addClass("AA");
+                            $("#UA").removeClass("AA");
+                            $("#BA").removeClass("AA");
+                            $("#roleDiv").attr("hidden", false);
+                            $("#newBlogsDiv").attr("hidden", true);
+                            $("#usersDiv").attr("hidden", true);
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+        <br><br>
+        <div class="row" id="usersDiv">
+            <div class="col-lg-12">
+                <div class="row">
+                    <table class="zui-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact No</th>
+                                <th>Username</th>
+                                <th>Account Type</th>
+                                <th>Approve</th>
+                                <th>Reject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.refUser)
+                            {
+                            <tr>
+                                <td>@item.ID</td>
+                                <td>@item.FullName</td>
+                                <td>@item.Email</td>
+                                <td>@item.ContactNo</td>
+                                <td>@item.Username</td>
+                                @{
+                                        var aa = (item.UserTypeID == 1 ? "Admin" : (item.UserTypeID == 2 ? "Author" : "Register User"));
+                                }
+                                <td>@aa</td>
+                                <td><a class="button" onclick="requestAction(this)"><i class="ti-check"></i> Approve</a></td>
+                                <td><a class="button" onclick="requestAction(this)"><i class="ti-trash"></i> Reject</a></td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="newBlogsDiv" hidden>
+            <section class="blog-post-area section-margin">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                @foreach (var items in Model.blogs)
+                                {
+                                <div class="col-md-4">
+                                    <div class="single-recent-blog-post card-view">
+                                        <div class="thumb">
+                                            <img class="card-img rounded-0" src="@items.CoverPicUrl" alt="">
+                                            <ul class="thumb-info">
+                                                <li><a href="#">@items.Dated</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="details mt-20">
+                                            <a href="blog-single.html">
+                                                <h3>@items.Title</h3>
+                                            </a>
+                                            @{
+                                                if (items.Description.Length > 150)
+                                                {
+                                                    <p>@items.Description.Substring(0, 150)</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>@items.Description</p>
+                                                }
+                                            }
+                                            <a class="button" href="/Blog/BlogDetails?BlogID=@items.ID">Details <i class="ti-arrow-right"></i></a>
+                                            <a class="button" href="/Blog/CreateBlog?BlogID=@items.ID">Edit <i class="ti-new-window"></i></a>
+                                            <a class="button" href="/Blog/DeleteBlog?BlogID=@items.ID&callingAction=Panel&callingController=AdminPanel">Delete <i class="ti-trash"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Blog Post Siddebar -->
+                </div>
+            </section>
+        </div>
+        <div class="row" id="roleDiv" hidden>
+            <div class="col-lg-12">
+                <div class="row">
+                    <table class="zui-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact No</th>
+                                <th>Username</th>
+                                <th>Account Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.refUsers)
+                            {
+                                <tr>
+                                    <td>@item.ID</td>
+                                    <td>@item.FullName</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.ContactNo</td>
+                                    <td>@item.Username</td>
+                                    <td>
+                                        <select class="form-control" name="UserTypeID">
+                                            @foreach (var items in Model.refUserType)
+                                            {
+                                                if (items.ID == item.UserTypeID)
+                                                {
+                                                    <option selected value="@items.ID">@items.Description</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@items.ID">@items.Description</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td><a class="button" onclick="changeRole(this)"><i class="ti-check" style="color:white;"></i> Save</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End Blog Post Siddebar -->
+    </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>
+
+@section scripts{
+    <script>
+        var rAction = "";
+        function requestAction(x) {
+            var ID = $(x).closest('tr').find('td:eq(0)').text();
+            rAction = $(x).text() == " Approve" ? "Approved" : "Rejected";
+
+            debugger;
+            $.ajax({
+                type: 'Get',
+                url: '/AdminPanel/requestAction',
+                dataType: 'json',
+                data: { UserID: ID, reqAction: rAction },
+                async: false,
+                success: function (data) {
+                    if (data == "Done") {
+                        swal("Success.", "Account has been " + rAction);
+                        function redirect() {
+                            window.location.href = "/AdminPanel/Panel";
+                        };
+                        window.setTimeout(redirect, 3000);
+                    }
+                },
+                error: function () {
+                    alert('There is something wrong');
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function changeRole(x) {
+            debugger;
+            var ID = $(x).closest('tr').find('td:eq(0)').text();
+            var RoleID = $(x).closest('tr').find('td:eq(5)').children().val();
+
+            debugger;
+            $.ajax({
+                type: 'Get',
+                url: '/AdminPanel/changeRole',
+                dataType: 'json',
+                data: { UserID: ID, RoleID: RoleID },
+                async: false,
+                success: function (data) {
+                    if (data == "Done") {
+                        swal("Success.", "User Role has been updated");
+                        function redirect() {
+                            window.location.href = "/AdminPanel/Panel";
+                        };
+                        window.setTimeout(redirect, 3000);
+                    }
+                },
+                error: function () {
+                    alert('There is something wrong');
+                }
+            });
+        }
+    </script>
+}

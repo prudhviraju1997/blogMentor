@@ -1,0 +1,80 @@
+﻿@model BlogMentor.Models.UserViewModel
+@{
+    ViewBag.Title = "MyBlogs";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+
+<style>
+    .AA {
+        background-color: #ff9907;
+        border-color: #ff9907;
+        color: #000022;
+    }
+</style>
+
+<section class="blog-post-area section-margin">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-sm-4"><a class="button AA" style="color:white;" id="UA"><i class="ti-user"></i> My Blogs</a></div>
+                    <div class="col-sm-4" onclick="location.href='/Blog/CreateBlog?BlogID=0'"><a class="button" style="color:white;" id="BA"><i class="ti-file"></i> Create Blog</a></div>
+                    <div class="col-sm-4" onclick="location.href = '/Login/Logout'"><a class="button" style="color:white;" id="RA"><i class="ti-user"></i> Logout</a></div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    @foreach (var items in Model.blogs)
+                    {
+                        <div class="col-md-4">
+                            <div class="single-recent-blog-post card-view">
+                                <div class="thumb">
+                                    <img class="card-img rounded-0" src="@items.CoverPicUrl" alt="">
+                                    <ul class="thumb-info">
+                                        <li><a href="#">@items.Dated</a></li>
+                                    </ul>
+                                </div>
+                                <div class="details mt-20">
+                                    <a href="blog-single.html">
+                                        <h3>@items.Title</h3>
+                                    </a>
+                                    @{
+                                        if (items.Description.Length > 150)
+                                        {
+                                            <p>@items.Description.Substring(0, 150)</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@items.Description</p>
+                                        }
+                                    }
+                                    <a class="button" href="/Blog/BlogDetails?BlogID=@items.ID">Details <i class="ti-arrow-right"></i></a>
+                                    <a class="button" href="/Blog/CreateBlog?BlogID=@items.ID">Edit <i class="ti-new-window"></i></a>
+                                    <a class="button" href="/Blog/DeleteBlog?BlogID=@items.ID&callingAction=MyBlogs&callingController=Blog">Delete <i class="ti-trash"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>        
+        <!-- End Blog Post Siddebar -->
+    </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        if("@TempData["Msg"]" == "Deleted"){
+            swal("Success", "Blog Deleted.");
+            function redirect() {
+                window.location.href = "/Blog/MyBlogs";
+            };
+            window.setTimeout(redirect, 3000);
+        }
+    });
+</script>

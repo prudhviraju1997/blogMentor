@@ -1,0 +1,224 @@
+﻿@model BlogMentor.Models.UserViewModel
+@{
+    ViewBag.Title = "BlogDetails";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+
+    var BID = Model.spGetBlog.ID;
+}
+<style>
+    #myBtn {
+        position: fixed; /* Fixed/sticky position */
+        bottom: 20px; /* Place the button at the bottom of the page */
+        right: 30px; /* Place the button 30px from the right */
+        z-index: 99; /* Make sure it does not overlap */
+        border: none; /* Remove borders */
+        outline: none; /* Remove outline */
+        background-color: red; /* Set a background color */
+        color: white; /* Text color */
+        cursor: pointer; /* Add a mouse pointer on hover */
+        padding: 15px; /* Some padding */
+        border-radius: 10px; /* Rounded corners */
+        font-size: 18px; /* Increase font size */
+    }
+</style>
+@{
+    if ((int)TempData["TypeID"] == 1)
+    {
+        <a class="button" id="myBtn" href="/AdminPanel/Panel">Admin Panel <i class="ti-arrow-left"></i></a>
+    }
+    else if ((int)TempData["TypeID"] == 2)
+    {
+        <a class="button" id="myBtn" href="/Blog/MyBlogs">Author Panel <i class="ti-arrow-left"></i></a>
+    }
+    else if ((int)TempData["TypeID"] == 3)
+    {
+        <a class="button" id="myBtn" href="/Login/Logout">Logout <i class="ti-arrow-left"></i></a>
+    }
+}
+<section class="blog-post-area section-margin">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="main_blog_details">
+                    <img class="img-fluid" src="@Model.spGetBlog.CoverPicUrl" alt="">
+                    <a><h4>@Model.spGetBlog.Title</h4></a>
+                    <div class="user_details">
+                        <div class="float-left">
+                            @{
+                                var tg = Model.spGetBlog.Tags;
+                                string[] tags = tg.Split(',');
+                                foreach (string t in tags)
+                                {
+                                    <a href="#">@t</a>
+                                }
+                            }
+                        </div>
+                        <div class="float-right mt-sm-0 mt-3">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5>@Model.spGetBlog.FullName</h5>
+                                    <p>@Model.spGetBlog.Dated</p>
+                                </div>
+                                <div class="d-flex">
+                                    <img width="42" height="42" src="~/Content/theme/img/CommonUser.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="blockquote">
+                        <p class="mb-0">@Model.spGetBlog.Quote</p>
+                    </blockquote>
+                    <p>@Model.spGetBlog.Description</p>
+                </div>
+
+                @*<div class="navigation-area">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
+                            <div class="thumb">
+                                <a href="#"><img class="img-fluid" src="~/Content/theme/img/blog/prev.jpg" alt=""></a>
+                            </div>
+                            <div class="arrow">
+                                <a href="#"><span class="lnr text-white lnr-arrow-left"></span></a>
+                            </div>
+                            <div class="detials">
+                                <p>Prev Post</p>
+                                <a href="#"><h4>A Discount Toner</h4></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12 nav-right flex-row d-flex justify-content-end align-items-center">
+                            <div class="detials">
+                                <p>Next Post</p>
+                                <a href="#"><h4>Cartridge Is Better</h4></a>
+                            </div>
+                            <div class="arrow">
+                                <a href="#"><span class="lnr text-white lnr-arrow-right"></span></a>
+                            </div>
+                            <div class="thumb">
+                                <a href="#"><img class="img-fluid" src="~/Content/theme/img/blog/next.jpg" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+                <div class="comments-area">
+                    <h4>Comments</h4>
+                    @foreach (var item in Model.spGetBlogComments)
+                    {
+                        if (item.IsApproved == true)
+                        {
+                            <div class="comment-list">
+                                <div class="single-comment justify-content-between d-flex">
+                                    <div class="user justify-content-between d-flex">
+                                        <div class="thumb">
+                                            <img src="~/Content/theme/img/CommonUser.png" alt="">
+                                        </div>
+                                        <div class="desc">
+                                            <h5><a href="#">@item.FullName</a></h5>
+                                            <p class="date">@item.CommentDate </p>
+                                            <p class="comment">
+                                                @item.CommentText
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if(item.IsApproved == false && ( (TempData["TypeID"] == null ? 0 : (int)TempData["TypeID"]) == 1 || (TempData["TypeID"] == null ? 0 : (int)TempData["TypeID"]) == 2))
+                        {
+                            <div class="comment-list">
+                                <div class="single-comment justify-content-between d-flex">
+                                    <div class="user justify-content-between d-flex">
+                                        <div class="thumb">
+                                            <img src="~/Content/theme/img/CommonUser.png" alt="">
+                                        </div>
+                                        <div class="desc">
+                                            <h5><a href="#">@item.FullName</a></h5>
+                                            <p class="date">@item.CommentDate </p>
+                                            <p class="comment">
+                                                @item.CommentText
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="reply-btn">
+                                        <a href="" onclick="approveComment(@item.ID)" class="btn-reply text-uppercase">Approve</a>
+                                        <a href="" onclick="rejectComment(@item.ID)" class="btn-reply text-uppercase">Reject</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="comment-form">
+                    <h4>Post Your Comment</h4>
+                    <form id="commentForm" action="/Blog/BlogDetails" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="BlogID" value="@BID" />
+                            <textarea class="form-control mb-10" id="myComment" rows="5" name="CommentText" placeholder="Messege" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Messege'" required"></textarea>
+                        </div>
+                        <a class="button submit_btn" style="color:white;" onclick="submitMe()">Post Comment</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End Blog Post Siddebar -->
+    </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        if("@TempData["Msg"]" == "Done"){
+            swal("Success.", "Your comment has been posted.");
+        }
+    });
+    function submitMe() {
+        if ($('#myComment').val().trim() == "") {
+            swal("Warning.", "Please write something to comment.");
+        }
+        else {
+            document.getElementById('commentForm').submit();
+        }
+    }
+</script>
+
+@section scripts{
+    <script>
+        var CID = "";
+        var rAction = "";
+        function approveComment(x) {
+            CID = x;
+            rAction = "Approved";
+            performAction();
+        }
+        function rejectComment(x) {
+            CID = x;
+            rAction = "Rejected";
+            performAction();
+        }
+        function performAction(){
+            debugger;
+            $.ajax({
+                type: 'Get',
+                url: '/Blog/commentAction',
+                dataType: 'json',
+                data: { CommentID: CID, reqAction: rAction },
+                async: false,
+                success: function (data) {
+                    if (data == "Done") {
+                        swal("Success.", "Comment has been " + rAction);
+                        function redirect() {
+                            window.location.href = "/Blog/BlogDetails?BlogID=@BID";
+                        };
+                        window.setTimeout(redirect, 3000);
+                    }
+                },
+                error: function () {
+                    alert('There is something wrong');
+                }
+            });
+        }
+    </script>
+}
+
+
+

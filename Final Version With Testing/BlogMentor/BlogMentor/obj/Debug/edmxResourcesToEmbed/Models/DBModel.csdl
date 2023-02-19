@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BlogMentorModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="BlogComments">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="BlogID" Type="Int64" />
+    <Property Name="CommentText" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+    <Property Name="CommentDate" Type="DateTime" Precision="3" />
+    <Property Name="IsApproved" Type="Boolean" />
+    <Property Name="UserID" Type="Int32" />
+    <NavigationProperty Name="Users" Relationship="BlogMentorModel.FK_BlogComments_Users" FromRole="BlogComments" ToRole="Users" />
+    <NavigationProperty Name="Blogs" Relationship="BlogMentorModel.FK_BlogComments_Blogs" FromRole="BlogComments" ToRole="Blogs" />
+  </EntityType>
+  <EntityType Name="RefUserType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Users" Relationship="BlogMentorModel.FK_Users_RefUserType" FromRole="RefUserType" ToRole="Users" />
+  </EntityType>
+  <EntityContainer Name="BlogMentorEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BlogComments" EntityType="Self.BlogComments" />
+    <EntitySet Name="RefUserType" EntityType="Self.RefUserType" />
+    <EntitySet Name="Users" EntityType="BlogMentorModel.Users" />
+    <AssociationSet Name="FK_BlogComments_Users" Association="BlogMentorModel.FK_BlogComments_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="BlogComments" EntitySet="BlogComments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Users_RefUserType" Association="BlogMentorModel.FK_Users_RefUserType">
+      <End Role="RefUserType" EntitySet="RefUserType" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="Blogs" EntityType="BlogMentorModel.Blogs" />
+    <AssociationSet Name="FK_BlogComments_Blogs" Association="BlogMentorModel.FK_BlogComments_Blogs">
+      <End Role="Blogs" EntitySet="Blogs" />
+      <End Role="BlogComments" EntitySet="BlogComments" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Blogs_Users" Association="BlogMentorModel.FK_Blogs_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Blogs" EntitySet="Blogs" />
+    </AssociationSet>
+    <FunctionImport Name="spGetBlogComments" ReturnType="Collection(BlogMentorModel.spGetBlogComments_Result)">
+      <Parameter Name="BlogID" Mode="In" Type="Int64" />
+    </FunctionImport>
+    <FunctionImport Name="spGetBlogs" ReturnType="Collection(BlogMentorModel.spGetBlogs_Result)">
+      <Parameter Name="BlogID" Mode="In" Type="Int64" />
+      <Parameter Name="SortOrder" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ContactNo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UserTypeID" Type="Int32" />
+    <Property Name="IsApproved" Type="Boolean" />
+    <NavigationProperty Name="BlogComments" Relationship="BlogMentorModel.FK_BlogComments_Users" FromRole="Users" ToRole="BlogComments" />
+    <NavigationProperty Name="RefUserType" Relationship="BlogMentorModel.FK_Users_RefUserType" FromRole="Users" ToRole="RefUserType" />
+    <NavigationProperty Name="Blogs" Relationship="BlogMentorModel.FK_Blogs_Users" FromRole="Users" ToRole="Blogs" />
+  </EntityType>
+  <Association Name="FK_BlogComments_Users">
+    <End Type="BlogMentorModel.Users" Role="Users" Multiplicity="0..1" />
+    <End Type="BlogMentorModel.BlogComments" Role="BlogComments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BlogComments">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Users_RefUserType">
+    <End Type="BlogMentorModel.RefUserType" Role="RefUserType" Multiplicity="0..1" />
+    <End Type="BlogMentorModel.Users" Role="Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RefUserType">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="UserTypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Blogs">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Tags" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="CoverPicUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Quote" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="Dated" Type="DateTime" Precision="3" />
+    <Property Name="UserID" Type="Int32" />
+    <NavigationProperty Name="BlogComments" Relationship="BlogMentorModel.FK_BlogComments_Blogs" FromRole="Blogs" ToRole="BlogComments" />
+    <NavigationProperty Name="Users" Relationship="BlogMentorModel.FK_Blogs_Users" FromRole="Blogs" ToRole="Users" />
+  </EntityType>
+  <Association Name="FK_BlogComments_Blogs">
+    <End Type="BlogMentorModel.Blogs" Role="Blogs" Multiplicity="0..1" />
+    <End Type="BlogMentorModel.BlogComments" Role="BlogComments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Blogs">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BlogComments">
+        <PropertyRef Name="BlogID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Blogs_Users">
+    <End Type="BlogMentorModel.Users" Role="Users" Multiplicity="0..1" />
+    <End Type="BlogMentorModel.Blogs" Role="Blogs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Blogs">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <ComplexType Name="spGetBlogComments_Result">
+    <Property Type="Int64" Name="ID" Nullable="false" />
+    <Property Type="Int64" Name="BlogID" Nullable="true" />
+    <Property Type="String" Name="CommentText" Nullable="true" MaxLength="2000" />
+    <Property Type="DateTime" Name="CommentDate" Nullable="true" Precision="23" />
+    <Property Type="Boolean" Name="IsApproved" Nullable="true" />
+    <Property Type="Int32" Name="UserID" Nullable="true" />
+    <Property Type="String" Name="FullName" Nullable="false" MaxLength="100" />
+  </ComplexType>
+  <ComplexType Name="spGetBlogs_Result">
+    <Property Type="Int64" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Title" Nullable="true" MaxLength="500" />
+    <Property Type="String" Name="Tags" Nullable="true" MaxLength="500" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="CoverPicUrl" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="Quote" Nullable="true" MaxLength="1000" />
+    <Property Type="DateTime" Name="Dated" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="UserID" Nullable="true" />
+    <Property Type="String" Name="FullName" Nullable="true" MaxLength="100" />
+  </ComplexType>
+</Schema>

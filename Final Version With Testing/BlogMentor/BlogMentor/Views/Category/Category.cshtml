@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewBag.Title = "Category";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    #myBtn {
+        position: fixed; /* Fixed/sticky position */
+        bottom: 20px; /* Place the button at the bottom of the page */
+        right: 30px; /* Place the button 30px from the right */
+        z-index: 99; /* Make sure it does not overlap */
+        border: none; /* Remove borders */
+        outline: none; /* Remove outline */
+        background-color: red; /* Set a background color */
+        color: white; /* Text color */
+        cursor: pointer; /* Add a mouse pointer on hover */
+        padding: 15px; /* Some padding */
+        border-radius: 10px; /* Rounded corners */
+        font-size: 18px; /* Increase font size */
+    }
+</style>
+@{
+    if ((int)TempData["TypeID"] == 1)
+    {
+        <a class="button" id="myBtn" href="/AdminPanel/Panel">Admin Panel <i class="ti-arrow-left"></i></a>
+    }
+    else if ((int)TempData["TypeID"] == 2)
+    {
+        <a class="button" id="myBtn" href="/Blog/MyBlogs">Author Panel <i class="ti-arrow-left"></i></a>
+    }
+    else if ((int)TempData["TypeID"] == 3)
+    {
+        <a class="button" id="myBtn" href="/Login/Logout">Logout <i class="ti-arrow-left"></i></a>
+    }
+}
+<!--================ Hero sm Banner start =================-->
+<section class="mb-30px">
+    <div class="container">
+        <div class="hero-banner hero-banner--sm">
+            <div class="hero-banner__content">
+                <h1>Category Page</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Category Page</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================ Hero sm Banner end =================-->
+<!--================ Start Blog Post Area =================-->
+<section class="blog-post-area section-margin">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    @foreach (var item in Model.blogs)
+                    {
+                        <div class="col-md-6">
+
+                            <div class="single-recent-blog-post card-view">
+                                <div class="thumb">
+                                    <img class="card-img rounded-0" src="@item.CoverPicUrl" alt="">
+                                    <ul class="thumb-info">
+                                        @*<li><a href="#"><i class="ti-user"></i>@item.FullName</a></li>*@
+                                        <li><a href="#"><i class="ti-themify-favicon"></i>@item.Dated</a></li>
+                                    </ul>
+                                </div>
+                                <div class="details mt-20">
+                                    <a href="blog-single.html">
+                                        <h3>@item.Title</h3>
+                                    </a>
+                                    @{
+                                        if (item.Description.Length > 150)
+                                        {
+                                            <p>@item.Description.Substring(0, 150)</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@item.Description</p>
+                                        }
+                                    }
+                                    <a class="button" href="/Blog/BlogDetails?BlogID=@item.ID">Read More <i class="ti-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-4 sidebar-widgets">
+                <div class="widget-wrap">
+                    <div class="single-sidebar-widget post-category-widget">
+                        <h4 class="single-sidebar-widget__title">Tags</h4>
+                        <form method="post" id="catForm" action="/Category/Category">
+                            <input type="hidden" id="catText" name="cat" />
+                            <ul class="cat-list mt-20">
+                    <li>
+                                    <a onclick="submitCatForm('Technology')" class="d-flex justify-content-between">
+                                        <p>Technology</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Software')" class="d-flex justify-content-between">
+                                        <p>Software</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a  onclick="submitCatForm('Lifestyle')" class="d-flex justify-content-between">
+                                        <p>Lifestyle</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Traveling')" class="d-flex justify-content-between">
+                                        <p>Traveling</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Food')" class="d-flex justify-content-between">
+                                        <p>Food</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Sports')" class="d-flex justify-content-between">
+                                        <p>Sports</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Education')" class="d-flex justify-content-between">
+                                        <p>Education</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Health')" class="d-flex justify-content-between">
+                                        <p>Health</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Games')" class="d-flex justify-content-between">
+                                        <p>Games</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Culture')" class="d-flex justify-content-between">
+                                        <p>Culture</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Entertainment')" class="d-flex justify-content-between">
+                                        <p>Entertainment</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Nature')" class="d-flex justify-content-between">
+                                        <p>Nature</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Animals')" class="d-flex justify-content-between">
+                                        <p>Animals</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Cars')" class="d-flex justify-content-between">
+                                        <p>Cars</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Bikes')" class="d-flex justify-content-between">
+                                        <p>Bikes</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Science')" class="d-flex justify-content-between">
+                                        <p>Science</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onclick="submitCatForm('Business')" class="d-flex justify-content-between">
+                                        <p>Business</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--================ End Blog Post Area =================-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+@section scripts{
+    <script>
+        function submitCatForm(x) {
+            debugger;
+            $("#catText").val(x);
+            $("#catForm")[0].submit();
+        }
+    </script>
+}

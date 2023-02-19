@@ -1,0 +1,104 @@
+﻿@model BlogMentor.Models.UserViewModel
+@{
+    ViewBag.Title = "CreateBlog";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    .AA {
+        background-color: #ff9907;
+        border-color: #ff9907;
+        color: #000022;
+    }
+</style>
+
+<section class="blog-post-area section-margin">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-sm-4" onclick="location.href='/Blog/MyBlogs'"><a class="button" style="color:white;" id="UA"><i class="ti-user"></i> My Blogs</a></div>
+                    <div class="col-sm-4"><a class="button AA" style="color:white;"><i class="ti-file"></i> Create Blog</a></div>
+                    <div class="col-sm-4" onclick="location.href = '/Login/Logout'"><a class="button" style="color:white;" id="RA"><i class="ti-user"></i> Logout</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-margin--small section-margin">
+    <div class="container">
+        <div class="comment-form">
+            <h4>Write Your Blog</h4>
+            <form action="/Blog/CreateBlog" id="blogForm" method="post" enctype="multipart/form-data">
+                @if (Model.blog != null)
+                {
+                    <div class="form-group form-inline">
+                        <div class="form-group col-lg-8 col-md-8 name">
+                            <input type="hidden" name="BlogID" id="bid" value="@TempData["BlogID"]" />
+                            <input type="text" class="form-control" value="@Model.blog.Tags" name="tags" id="tags" placeholder="Tags (Fashion,Brand)" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Tags (Fashion,Brand)'">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" value="@Model.blog.Title" name="title" id="title" placeholder="Blog Title" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Blog Title'">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control mb-10" rows="3" name="quote" placeholder="Any Quotation" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Any Quotation'">@Model.blog.Quote</textarea>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control mb-10" rows="7" name="description" placeholder="Blog Description" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Blog Description'" required="">@Model.blog.Description</textarea>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group form-inline">
+                        <div class="form-group col-lg-8 col-md-8 name">
+                            <input type="hidden" name="BlogID" value="0" />
+                            <input type="text" class="form-control dd" name="tags" id="tags" placeholder="Tags (Fashion,Brand)" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Tags (Fashion,Brand)'">
+                        </div>
+                        <div class="form-group col-lg-4 col-md-4 email">
+                            <input type="file" class="form-control" name="file" id="file">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control dd" name="title" id="title" placeholder="Blog Title" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Blog Title'">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control mb-10 dd" rows="3" name="quote" placeholder="Any Quotation" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Any Quotation'"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control mb-10 dd" rows="7" name="description" placeholder="Blog Description" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Blog Description'" required=""></textarea>
+                    </div>
+                }
+                @*<a class="button submit_btn" style="color:white;" onclick="submitMe()">Save Blog</a>*@
+                <button type="button" class="button button--active button-contactForm" onclick="submitMe()">Save Blog</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+    });
+</script>
+
+@section scripts{
+    <script>
+        function submitMe() {
+            var flag = true;
+            $('.dd').each(function(i, obj) {
+                if ($(obj).val().trim() == "") {
+                    flag = false;
+                }
+            });
+            if(flag) {
+                document.getElementById('blogForm').submit();
+            }
+            else {
+                swal("Warning.", "Please fill all the mandatory fields.");
+            }
+        }
+    </script>    
+}
+

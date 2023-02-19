@@ -1,0 +1,230 @@
+﻿@model BlogMentor.Models.UserViewModel
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/MasterLayout.cshtml";
+}
+<style>
+    #myBtn {
+        position: fixed; /* Fixed/sticky position */
+        bottom: 20px; /* Place the button at the bottom of the page */
+        right: 30px; /* Place the button 30px from the right */
+        z-index: 99; /* Make sure it does not overlap */
+        border: none; /* Remove borders */
+        outline: none; /* Remove outline */
+        background-color: red; /* Set a background color */
+        color: white; /* Text color */
+        cursor: pointer; /* Add a mouse pointer on hover */
+        padding: 15px; /* Some padding */
+        border-radius: 10px; /* Rounded corners */
+        font-size: 18px; /* Increase font size */
+}
+</style>
+@{
+    if ((int)TempData["TypeID"] == 1)
+    {
+        <a class="button" id="myBtn" href="/AdminPanel/Panel">Admin Panel <i class="ti-arrow-left"></i></a>
+    }
+    else if ((int)TempData["TypeID"] == 2)
+    {
+        <a class="button" id="myBtn" href="/Blog/MyBlogs">Author Panel <i class="ti-arrow-left"></i></a>
+    }
+    else if ((int)TempData["TypeID"] == 3)
+    {
+        <a class="button" id="myBtn" href="/Login/Logout">Logout <i class="ti-arrow-left"></i></a>
+    }
+}
+<main class="site-main">
+    <!--================Hero Banner start =================-->
+    <section class="mb-30px">
+        <div class="container">
+            <div class="hero-banner">
+                <div class="hero-banner__content">
+                    <h3>Content That Works</h3>
+                    <h1>Professional Writing Platform</h1>
+                    <h4>Results Focused Strategy</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================Hero Banner end =================-->
+    <!--================ Blog slider start =================-->
+    <section>
+        <div class="container">
+            <form action="/Home/Index" method="post">
+                <label>Date Sort Order</label>
+                <select class="form-control col-sm-3" name="dateOrder">
+                    <option value="Newer">Newer</option>
+                    <option value="Older">Older</option>
+                </select>
+                <br />
+                <button type="submit" class="button button--active button-contactForm">Submit</button>
+            </form>
+
+            <div class="owl-carousel owl-theme blog-slider">
+                <div class="card blog__slide text-center">
+                    @foreach (var item in Model.blogs)
+                    {
+                        <div class="blog__slide__img">
+                            <img class="card-img rounded-0" src="@item.CoverPicUrl" alt="">
+                        </div>
+                        <div class="blog__slide__content">
+                            <a class="blog__slide__label" href="#">@item.Tags.Split(',')[0]</a>
+                            <h3><a href="#">@item.Title</a></h3>
+                            <p>@item.Dated</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================ Blog slider end =================-->
+    <!--================ Start Blog Post Area =================-->
+    <section class="blog-post-area section-margin mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    @foreach (var item in Model.spGetBlogs)
+                    {
+                        <div class="single-recent-blog-post">
+                            <div class="thumb">
+                                <img class="img-fluid" src="@item.CoverPicUrl" alt="">
+                                <ul class="thumb-info">
+                                    <li><a href="#"><i class="ti-user"></i>@item.FullName </a></li>
+                                    <li><a href="#"><i class="ti-notepad"></i>@item.Dated</a></li>
+                                </ul>
+                            </div>
+                            <div class="details mt-20">
+                                <a><h3>@item.Title</h3></a>
+                                <p class="tag-list-inline">Tags: @item.Tags</p>
+                                @{
+                                    if (item.Description.Length > 150)
+                                    {
+                                        <p>@item.Description.Substring(0, 150)</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@item.Description</p>
+                                    }
+                                }
+                                <a class="button" href="/Blog/BlogDetails?BlogID=@item.ID">Details <i class="ti-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Start Blog Post Siddebar -->
+                <div class="col-lg-4 sidebar-widgets">
+                    <div class="widget-wrap">
+                        <div class="single-sidebar-widget post-category-widget">
+                            <h4 class="single-sidebar-widget__title">Tags</h4>
+                            <form method="post" id="catForm" action="/Category/Category">
+                                <input type="hidden" id="catText" name="cat" />
+                                <ul class="cat-list mt-20">
+                  <li>
+                                        <a onclick="submitCatForm('Technology')" class="d-flex justify-content-between">
+                                            <p>Technology</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Software')" class="d-flex justify-content-between">
+                                            <p>Software</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Lifestyle')" class="d-flex justify-content-between">
+                                            <p>Lifestyle</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Traveling')" class="d-flex justify-content-between">
+                                            <p>Traveling</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Food')" class="d-flex justify-content-between">
+                                            <p>Food</p>
+                                        </a>                                     
+                                       
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Sports')" class="d-flex justify-content-between">
+                                            <p>Sports</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Education')" class="d-flex justify-content-between">
+                                            <p>Education</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Health')" class="d-flex justify-content-between">
+                                            <p>Health</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Games')" class="d-flex justify-content-between">
+                                            <p>Games</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Culture')" class="d-flex justify-content-between">
+                                            <p>Culture</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Entertainment')" class="d-flex justify-content-between">
+                                            <p>Entertainment</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Nature')" class="d-flex justify-content-between">
+                                            <p>Nature</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Animals')" class="d-flex justify-content-between">
+                                            <p>Animals</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Cars')" class="d-flex justify-content-between">
+                                            <p>Cars</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Bikes')" class="d-flex justify-content-between">
+                                            <p>Bikes</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Science')" class="d-flex justify-content-between">
+                                            <p>Science</p>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="submitCatForm('Business')" class="d-flex justify-content-between">
+                                            <p>Business</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Blog Post Siddebar -->
+        </div>
+    </section>
+    <!--================ End Blog Post Area =================-->
+</main>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+@section scripts{
+    <script>
+        function submitCatForm(x) {
+            debugger;
+            $("#catText").val(x);
+            $("#catForm")[0].submit();
+        }
+    </script>
+}
